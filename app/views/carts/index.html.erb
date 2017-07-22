@@ -1,0 +1,38 @@
+<% provide(:title, 'Cart') %>
+<h1>Cart</h1>
+  <% if @carts.any? %>
+    <% @carts.each do |cart| %>
+      <table>
+        <tr class="row">
+          <th class="col-md-5">Product Name</th>
+          <th class="col-md-2">Quantity</th>
+          <th class="col-md-2">Price</th>
+          <th class="col-md-2">Total</th>
+          <th class="col-md-3">Action</th>
+        </tr>
+        <tr class="row">
+          <td class="col-md-5"><%= link_to cart.product.name, product_path(cart.product.id) %></td>
+          <td class="col-md-2"><%= cart.quantity %></td>
+          <td class="col-md-2"><%= number_to_currency(cart.product.price) %></td>
+          <td class="col-md-2"><%= cart.quantity * cart.product.price %></td>
+          <td class="col-md-3"><%= link_to "Edit", product_path(cart.product.id) %>
+          | <%= link_to "X", cart, method: :delete,
+                                   data: { confirm: "Are u sure?" } %></td>
+        </tr>
+      </table>
+    <% end %>
+     <div class="col-md-3">
+      <%= form_for current_user.orders.build do |f| %>
+        <%= f.hidden_field :user_id, value: current_user.id %>
+        <%= f.submit "Order", class: "btn btn-success" %>
+      <% end %>
+    </div>
+    <div style="float: right;">
+      <p><span style="font-size: 25px">Your cart's total price is:
+        <%= number_to_currency(carts_price(@carts)) %>
+      </span>
+      </p>
+    </div>
+  <% else %>
+    <p>Your cart is empty. Please add some products to it.</p>
+  <% end %>

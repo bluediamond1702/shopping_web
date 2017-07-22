@@ -1,0 +1,43 @@
+<% provide(:title, 'Orders') %>
+<h1>Orders</h1>
+<% if @orders.any? %>
+
+<%= will_paginate %>
+
+  <% @orders.each do |order| %>
+  <table>
+    <tr class="row">
+      <th class="col-md-4">User Name</th>
+      <th class="col-md-2">Status</th>
+      <th class="col-md-1">Approved by Admin ID</th>
+      <th class="col-md-2">Total</th>
+      <th class="col-md-1">Edit</th>
+      <th class="col-md-1">Action</th>
+      <th class="col-md-1">Detail</th>
+    </tr>
+    <tr class="row">
+      <th class="col-md-4"><%= order.user.name %></th>
+      <th class="col-md-2"><%= order.status %></th>
+      <th class="col-md-1"><%= order.approved_by_admin_id %></th>
+      <th class="col-md-2"><%= number_to_currency(order.order_price) %></th>
+      <th class="col-md-1">
+        <%= form_for order, url: order_path(order.id) do |f| %>
+          <%= f.hidden_field :status, value: "approved" %>
+          <%= f.hidden_field :approved_by_admin_id, value: current_user.id %>
+          <%= f.submit "Approved", class: "btn btn-primary" %>
+        <% end %>
+      </th>
+      <th class="col-md-1">
+        <%= link_to "X", order, method: :delete,
+                                data: { confirm: "Are u sure?" } %>
+      </th>
+      <th class="col-md-1"><%= link_to "Detail", order_details_order_path(order.id) %></th>
+    </tr>
+  </table>
+  <% end %>
+
+<%= will_paginate %>
+
+<% else %>
+  <p>Don't have any order</p>
+<% end %>
